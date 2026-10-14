@@ -31,8 +31,9 @@ static int16_t quantize(
 }
 
 /* 分开写 8/16 位循环，避免在每一次乘法中判断元素位宽。 */
-static void
-convolve8(const conv_config_t *c, const int8_t *source, int8_t *target) {
+static void convolve8(
+    const conv_config_t *c, const int8_t *source, int8_t *target
+) {
     uint32_t out_width  = c->width - c->kernel_size + 1U;
     uint32_t out_height = c->height - c->kernel_size + 1U;
     for (uint32_t y = 0; y < out_height; ++y) {
@@ -52,8 +53,9 @@ convolve8(const conv_config_t *c, const int8_t *source, int8_t *target) {
     }
 }
 
-static void
-convolve16(const conv_config_t *c, const int16_t *source, int16_t *target) {
+static void convolve16(
+    const conv_config_t *c, const int16_t *source, int16_t *target
+) {
     uint32_t out_width    = c->width - c->kernel_size + 1U;
     uint32_t out_height   = c->height - c->kernel_size + 1U;
     uint32_t src_elements = c->src_stride / sizeof(int16_t);

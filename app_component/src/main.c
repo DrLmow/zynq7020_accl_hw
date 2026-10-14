@@ -25,9 +25,9 @@
 #define BENCH_TIMEOUT_SECONDS 5U
 #define BENCH_ROUND_ENABLE    1U
 #define BENCH_PL_CLOCK_HZ     100000000U
-#define ALIGN_UP(value, alignment)                                             \
+#define ALIGN_UP(value, alignment) \
     (((value) + (alignment) - 1U) & ~((alignment) - 1U))
-#define BUFFER_BYTES                                                           \
+#define BUFFER_BYTES \
     ALIGN_UP(ALIGN_UP(BENCH_MAX_WIDTH * 2U, 8U) * BENCH_MAX_HEIGHT, 64U)
 
 #define ACCEL_BASE ((UINTPTR)XPAR_CONV_ACCEL_BD_WRAPPER_0_BASEADDR)
@@ -121,11 +121,11 @@ static uint64_t timestamp(void) {
  * prescaler=0 时计数频率为 CPU/2，与 COUNTS_PER_SECOND 一致。
  */
 static int initialize_timer(void) {
-    const UINTPTR control_address = (UINTPTR)XPAR_GLOBAL_TIMER_BASEADDR + 0x08U;
-    const uint32_t enable_mask    = 1U;
-    const uint32_t prescaler_mask = 0x0000ff00U;
-    uint32_t       before         = Xil_In32(control_address);
-    uint32_t       configured     = (before & ~prescaler_mask) | enable_mask;
+    const UINTPTR  control_address = (UINTPTR)XPAR_GLOBAL_TIMER_BASEADDR + 0x08U;
+    const uint32_t enable_mask     = 1U;
+    const uint32_t prescaler_mask  = 0x0000ff00U;
+    uint32_t       before          = Xil_In32(control_address);
+    uint32_t       configured      = (before & ~prescaler_mask) | enable_mask;
     Xil_Out32(control_address, configured);
     dsb();
     isb();
