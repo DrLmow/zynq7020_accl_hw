@@ -38,6 +38,7 @@ src/*
 !src/docs
 src/docs/verification_report.md
 !src/bd
+!src/python_model/
 
 25_prj/
 
