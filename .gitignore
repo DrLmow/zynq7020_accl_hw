@@ -1,0 +1,46 @@
+# Ignore build output directory
+/build
+/export
+
+# Ignore object files and dependent files
+.o
+.d
+
+#Ignore logs folder and log files
+/logs
+.log
+
+#Ignore lock files
+.lock
+
+.bin
+.pdi
+.vitisWorkspace.json
+
+_ide/logs
+_ide/.wsdata
+
+_ide/
+.rigel_lopper/
+.slang/
+accl_hw.*/
+
+platform/
+
+app_component/*
+!app_component/src/
+app_component/src/*
+!app_component/src/*.c
+!app_component/src/*.h
+
+src/*
+!src/rtl
+!src/docs
+src/docs/verification_report.md
+!src/bd
+
+25_prj/
+
+*.xpr
+*.xsa
+*.log
