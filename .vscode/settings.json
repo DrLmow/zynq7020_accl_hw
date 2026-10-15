@@ -1,0 +1,7 @@
+{
+    "explorer.decorations.colors": false,
+    "livePreview.defaultPreviewPath": "/brevitas/docs/v0.12.1/index.html",
+    "files.watcherExclude": {
+        "**/target/**": true
+    }
+}

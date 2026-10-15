@@ -49,8 +49,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data")
     parser.add_argument("--checkpoint", type=Path, default=ROOT / "checkpoints/best.pt")
-    parser.add_argument("--download", action="store_true", help="Download missing MNIST files")
-    parser.add_argument("--evaluate", action="store_true", help="Only evaluate the saved checkpoint")
+    parser.add_argument(
+        "--download", action="store_true", help="Download missing MNIST files"
+    )
+    parser.add_argument(
+        "--evaluate", action="store_true", help="Only evaluate the saved checkpoint"
+    )
     parser.add_argument("--epochs", type=positive_int, default=10)
     parser.add_argument("--batch-size", type=positive_int, default=128)
     parser.add_argument("--learning-rate", type=float, default=0.001)
@@ -69,20 +73,28 @@ def main():
     torch.set_num_threads(args.threads)
     torch.use_deterministic_algorithms(True)
     transform = transforms.ToTensor()  # MNIST: bright digit, dark background, [0, 1].
-    test_data = datasets.MNIST(args.data_dir, train=False, transform=transform, download=args.download)
+    test_data = datasets.MNIST(
+        args.data_dir, train=False, transform=transform, download=args.download
+    )
     test_loader = DataLoader(test_data, batch_size=args.batch_size)
 
     if args.evaluate:
         model, _ = load_checkpoint(args.checkpoint, args.device)
-        print(json.dumps({"test": run_epoch(model, test_loader, args.device)}, indent=2))
+        print(
+            json.dumps({"test": run_epoch(model, test_loader, args.device)}, indent=2)
+        )
         return
 
-    full_train = datasets.MNIST(args.data_dir, train=True, transform=transform, download=args.download)
+    full_train = datasets.MNIST(
+        args.data_dir, train=True, transform=transform, download=args.download
+    )
     train_data, validation_data = random_split(
         full_train, [55000, 5000], generator=torch.Generator().manual_seed(args.seed)
     )
     train_loader = DataLoader(
-        train_data, batch_size=args.batch_size, shuffle=True,
+        train_data,
+        batch_size=args.batch_size,
+        shuffle=True,
         generator=torch.Generator().manual_seed(args.seed),
     )
     validation_loader = DataLoader(validation_data, batch_size=args.batch_size)
@@ -90,11 +102,16 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
     best_accuracy = -1.0
     history = []
-    print(f"Device: {args.device}; parameters: {sum(p.numel() for p in model.parameters()):,}", flush=True)
+    print(
+        f"Device: {args.device}; parameters: {sum(p.numel() for p in model.parameters()):,}",
+        flush=True,
+    )
     for epoch in range(1, args.epochs + 1):
         train_metrics = run_epoch(model, train_loader, args.device, optimizer)
         validation_metrics = run_epoch(model, validation_loader, args.device)
-        history.append({"epoch": epoch, "train": train_metrics, "validation": validation_metrics})
+        history.append(
+            {"epoch": epoch, "train": train_metrics, "validation": validation_metrics}
+        )
         print(
             f"Epoch {epoch:02d}/{args.epochs}: loss={train_metrics['loss']:.4f}, "
             f"train={train_metrics['accuracy']:.2%}, validation={validation_metrics['accuracy']:.2%}",
@@ -103,16 +120,27 @@ def main():
         if validation_metrics["accuracy"] > best_accuracy:
             best_accuracy = validation_metrics["accuracy"]
             save_checkpoint(
-                args.checkpoint, model, epoch=epoch, seed=args.seed,
-                validation=validation_metrics, input_scale="uint8 / 255",
+                args.checkpoint,
+                model,
+                epoch=epoch,
+                seed=args.seed,
+                validation=validation_metrics,
+                input_scale="uint8 / 255",
             )
 
     model, metadata = load_checkpoint(args.checkpoint, args.device)
     test_metrics = run_epoch(model, test_loader, args.device)
-    report = {"best_epoch": metadata["epoch"], "seed": args.seed, "history": history, "test": test_metrics}
+    report = {
+        "best_epoch": metadata["epoch"],
+        "seed": args.seed,
+        "history": history,
+        "test": test_metrics,
+    }
     report_path = args.checkpoint.with_suffix(".metrics.json")
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"Best epoch: {metadata['epoch']}; test accuracy: {test_metrics['accuracy']:.2%}")
+    print(
+        f"Best epoch: {metadata['epoch']}; test accuracy: {test_metrics['accuracy']:.2%}"
+    )
     print(f"Checkpoint: {args.checkpoint}\nMetrics: {report_path}")
 
 

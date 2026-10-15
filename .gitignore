@@ -45,3 +45,6 @@ src/docs/verification_report.md
 *.xpr
 *.xsa
 *.log
+
+.metals
+scala/
